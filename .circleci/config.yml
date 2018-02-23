@@ -11,7 +11,7 @@ jobs:
       - run: cd SPIRV-LLVM; git pull; cd tools/clang; git pull
       - run: mkdir -p SPIRV-LLVM/build
       - run: cd SPIRV-LLVM/build && cmake ../ -DCMAKE_BUILD_TYPE=Release -DLLVM_BUILD_RUNTIME=Off -DLLVM_INCLUDE_TESTS=Off -DLLVM_INCLUDE_EXAMPLES=Off -DLLVM_ENABLE_BACKTRACES=Off -DLLVM_TARGETS_TO_BUILD=X86
-      - run: cd SPIRV-LLVM/build && make -j `nproc`
+      - run: cd SPIRV-LLVM/build && make
       - run: rm -rf `ls SPIRV-LLVM/build | grep -v bin`
       - run: zip -r archive.zip SPIRV-LLVM
       - store_artifacts:
