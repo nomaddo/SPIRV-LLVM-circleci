@@ -11,9 +11,24 @@ jobs:
       - run: cd SPIRV-LLVM; git pull; cd tools/clang; git pull
       - run: mkdir -p SPIRV-LLVM/build
       - run: cd SPIRV-LLVM/build && cmake ../ -DCMAKE_BUILD_TYPE=Release -DLLVM_BUILD_RUNTIME=Off -DLLVM_INCLUDE_TESTS=Off -DLLVM_INCLUDE_EXAMPLES=Off -DLLVM_ENABLE_BACKTRACES=Off -DLLVM_TARGETS_TO_BUILD=X86
-      - run: cd SPIRV-LLVM/build && make -j3
+      - run: cd SPIRV-LLVM/build && make -j `nproc`
       - run: rm -rf `ls SPIRV-LLVM/build | grep -v bin`
       - run: zip -r archive.zip SPIRV-LLVM
       - store_artifacts:
           path: archive.zip
           distination: archive.zip
+workflows:
+  version: 2
+  commit-workflow:
+    jobs:
+      - build
+  scheduled-workflow:
+    triggers:
+      - schedule:
+          cron: "0 1 * * *"
+          filters:
+            branches:
+              only:
+                - master
+    jobs:
+      - build
