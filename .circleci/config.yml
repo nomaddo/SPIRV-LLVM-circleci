@@ -1,0 +1,19 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: ubuntu:16.04
+    steps:
+      - run: apt-get update
+      - run: apt-get install -y --no-install-recommends ca-certificates build-essential g++ cmake python zlib1g-dev zip gzip git
+      - run: git clone -b khronos/spirv-3.6.1 http://github.com/KhronosGroup/SPIRV-LLVM.git SPIRV-LLVM
+      - run: git clone -b spirv-1.0 http://github.com/KhronosGroup/SPIR SPIRV-LLVM/tools/clang
+      - run: cd SPIRV-LLVM; git pull; cd tools/clang; git pull
+      - run: mkdir -p SPIRV-LLVM/build
+      - run: cd SPIRV-LLVM/build && cmake ../ -DCMAKE_BUILD_TYPE=Release -DLLVM_BUILD_RUNTIME=Off -DLLVM_INCLUDE_TESTS=Off -DLLVM_INCLUDE_EXAMPLES=Off -DLLVM_ENABLE_BACKTRACES=Off -DLLVM_TARGETS_TO_BUILD=X86
+      - run: cd SPIRV-LLVM/build && make -j3
+      - run: rm -rf `ls SPIRV-LLVM/build | grep -v bin`
+      - run: zip -r archive.zip SPIRV-LLVM
+      - store_artifacts:
+          path: archive.zip
+          distination: archive.zip
