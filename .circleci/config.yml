@@ -19,10 +19,10 @@ jobs:
           distination: archive.zip
 workflows:
   version: 2
-  commit-workflow:
+  commit:
     jobs:
       - build
-  scheduled-workflow:
+  nightly:
     triggers:
       - schedule:
           cron: "0 1 * * *"
